@@ -9,3 +9,19 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Institution{
+  id Int @id @default(autoincrement())
+  email String
+  password String
+  name String
+  description String?
+  street String
+  houseNumber Int
+  complement String?
+  zipCode String
+  image String?
+  lat Int?
+  lng Int?
+  createdAt DateTime @default(now())
+}

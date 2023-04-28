@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 
-export const prisma: PrismaClient = new PrismaClient({
-  log: ["query"],
-});
+const globalForPrisma = global as { prisma?: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma || new PrismaClient({ log: ["query"] });
+
+if (process.env.NODE_ENV === "development") globalForPrisma.prisma = prisma;
