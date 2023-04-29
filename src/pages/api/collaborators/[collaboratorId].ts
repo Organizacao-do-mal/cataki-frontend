@@ -1,25 +1,25 @@
-import { InstitutionController } from "@/controllers/institution-controller";
+import { CollaboratorController } from "@/controllers/collaborator-controller";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const institutionController = new InstitutionController();
+  const collaboratorController = new CollaboratorController();
 
   if (req.method === "GET") {
     try {
-      const institution = await institutionController.getById({
-        institutionId: Number(req.query.institutionId),
+      const collaborator = await collaboratorController.getById({
+        collaboratorId: Number(req.query.collaboratorId),
       });
 
       res.status(200).json({
-        message: "Instituição listada com sucesso",
-        payload: institution,
+        message: "Colaborador listado com sucesso",
+        payload: collaborator,
       });
     } catch (error: any) {
       switch (error.name) {
-        case "Institution not found":
+        case "Collaborator not found":
           return res.status(404).json({
             message: error.message,
             payload: {},

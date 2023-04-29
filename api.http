@@ -27,7 +27,7 @@ POST http://localhost:3000/api/collaborators
 Content-type: application/json
 
 {
-    "email": "collaborator1@gmail.com",
+    "email": "collaborator2@gmail.com",
     "password": "password",
     "name": "collaborator_name",
     "address": {
@@ -37,3 +37,7 @@ Content-type: application/json
         "complement": "any_complement"
     }
 }
+
+###
+
+GET http://localhost:3000/api/collaborators/2

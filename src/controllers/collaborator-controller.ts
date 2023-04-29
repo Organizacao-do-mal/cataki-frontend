@@ -49,6 +49,39 @@ export class CollaboratorController {
 
     return newCollaborator.id;
   }
+
+  async getById({
+    collaboratorId,
+  }: GetCollaboratorById.Params): Promise<GetCollaboratorById.Result> {
+    const collaborator = await prisma.collaborator.findFirst({
+      select: {
+        email: true,
+        name: true,
+        street: true,
+        houseNumber: true,
+        complement: true,
+        zipCode: true,
+      },
+      where: { id: collaboratorId },
+    });
+
+    if (!collaborator)
+      throw {
+        name: "Collaborator not found",
+        message: "Colaborador não encontrada",
+      };
+
+    return {
+      email: collaborator.email,
+      name: collaborator.name,
+      address: {
+        street: collaborator.street,
+        number: collaborator.houseNumber,
+        complement: collaborator.complement,
+        zipCode: collaborator.zipCode,
+      },
+    };
+  }
 }
 
 namespace CreateCollaborator {
@@ -57,4 +90,18 @@ namespace CreateCollaborator {
     "email" | "password" | "name" | "address"
   >;
   export type Result = number;
+}
+
+namespace GetCollaboratorById {
+  export type Params = { collaboratorId: number };
+  export type Result = {
+    email: string;
+    name: string;
+    address: {
+      street: string;
+      number: number;
+      complement: string | null;
+      zipCode: string;
+    };
+  };
 }
