@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Institution, InstitutionModel } from "@/models/institution";
-import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 export class InstitutionController {
   constructor() {}
@@ -22,19 +22,23 @@ export class InstitutionController {
       createAt: null,
     });
 
-    await institution.setBounds(institution.address.zipCode);
+    institution.validate();
 
-    const institutionAlreadyExists = await prisma.institution.findMany({
+    const [institutionAlreadyExists] = await prisma.institution.findMany({
       where: { email: institution.email },
     });
 
     if (institutionAlreadyExists)
       throw { name: "Invalid param", message: "Email já cadastrado!" };
 
+    await institution.setPosition(institution.address.zipCode);
+
+    const hashedPassword = bcrypt.hashSync(institution.password);
+
     const newInstitution = await prisma.institution.create({
       data: {
         email: institution.email,
-        password: institution.password,
+        password: hashedPassword,
         name: institution.name,
         description: institution.description,
         houseNumber: institution.address.number,

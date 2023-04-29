@@ -2,13 +2,14 @@ POST http://localhost:3000/api/institutions
 Content-type: application/json
 
 {
-    "email": "institution@gmail.com",
+    "email": "institution2@gmail.com",
     "password": "password",
     "name": "institution_name",
     "description": "any_description",
     "address": {
         "street": "Praça da Sé",
         "number": 202,
-        "zipCode": "01001-000"
+        "zipCode": "01001-000",
+        "complement": "any_complement"
     }
 }

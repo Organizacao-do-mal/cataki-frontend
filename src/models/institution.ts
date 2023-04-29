@@ -41,9 +41,7 @@ export class Institution {
   position: { lat: string; lng: string } | undefined;
   createAt: Date | null;
 
-  constructor(readonly params: InstitutionModel) {
-    this.validate();
-
+  constructor(private readonly params: InstitutionModel) {
     this.id = params.id;
     this.email = params.email;
     this.name = params.name;
@@ -55,11 +53,11 @@ export class Institution {
     this.createAt = params.createAt;
   }
 
-  private validate() {
+  public validate() {
     return institutionModel.parse(this.params);
   }
 
-  public async setBounds(zipCode: string) {
+  public async setPosition(zipCode: string) {
     const bounds = await googleMapApi.post(
       `json?address=${zipCode}&key=${process.env.GOOGLE_GEOLOCATION_KEY}`
     );
