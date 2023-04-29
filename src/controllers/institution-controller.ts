@@ -64,7 +64,10 @@ export class InstitutionController {
     });
 
     if (institutions.length === 0)
-      throw { name: "Institutions not found", message: "Nem uma instituição encontrada!" };
+      throw {
+        name: "Institutions not found",
+        message: "Nem uma instituição encontrada!",
+      };
 
     return institutions.map(({ name, description, houseNumber, street }) => ({
       name,
@@ -72,6 +75,41 @@ export class InstitutionController {
       number: houseNumber,
       street: street,
     }));
+  }
+
+  async getById({
+    institutionId,
+  }: GetInstitutionById.Params): Promise<GetInstitutionById.Result> {
+    const institution = await prisma.institution.findFirst({
+      select: {
+        email: true,
+        name: true,
+        description: true,
+        street: true,
+        houseNumber: true,
+        complement: true,
+        zipCode: true,
+      },
+      where: { id: institutionId },
+    });
+
+    if (!institution)
+      throw {
+        name: "Institution not found",
+        message: "Instituição não encontrada",
+      };
+
+    return {
+      email: institution.email,
+      name: institution.name,
+      description: institution.description ?? "Sem descrição",
+      address: {
+        street: institution.street,
+        number: institution.houseNumber,
+        complement: institution.complement,
+        zipCode: institution.zipCode,
+      },
+    };
   }
 }
 
@@ -86,3 +124,19 @@ type GetAllInstitutionResult = {
   street: string;
   number: number;
 }[];
+
+namespace GetInstitutionById {
+  export type Params = { institutionId: number };
+
+  export type Result = {
+    email: string;
+    name: string;
+    description: string;
+    address: {
+      street: string;
+      number: number;
+      complement: string | null;
+      zipCode: string;
+    };
+  };
+}
