@@ -11,7 +11,7 @@ export class InstitutionController {
     name,
     description,
     address,
-  }: CreateInstitution.Params): Promise<number> {
+  }: CreateInstitutionParams): Promise<number> {
     const institution = new Institution({
       email,
       password,
@@ -52,11 +52,37 @@ export class InstitutionController {
 
     return newInstitution.id;
   }
+
+  async getAll(): Promise<GetAllInstitutionResult> {
+    const institutions = await prisma.institution.findMany({
+      select: {
+        name: true,
+        description: true,
+        houseNumber: true,
+        street: true,
+      },
+    });
+
+    if (institutions.length === 0)
+      throw { name: "Institutions not found", message: "Nem uma instituição encontrada!" };
+
+    return institutions.map(({ name, description, houseNumber, street }) => ({
+      name,
+      description: description ?? "Sem descrição",
+      number: houseNumber,
+      street: street,
+    }));
+  }
 }
 
-namespace CreateInstitution {
-  export type Params = Pick<
-    InstitutionModel,
-    "email" | "password" | "name" | "description" | "address"
-  >;
-}
+type CreateInstitutionParams = Pick<
+  InstitutionModel,
+  "email" | "password" | "name" | "description" | "address"
+>;
+
+type GetAllInstitutionResult = {
+  name: string;
+  description: string;
+  street: string;
+  number: number;
+}[];
