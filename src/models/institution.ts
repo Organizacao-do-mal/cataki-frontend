@@ -1,3 +1,4 @@
+import { googleMapApi } from "@/lib/axios";
 import { z } from "zod";
 
 const institutionModel = z.object({
@@ -5,19 +6,19 @@ const institutionModel = z.object({
   email: z.string().email(),
   password: z.string(),
   name: z.string(),
-  description: z.string().optional(),
+  description: z.string(),
   image: z.string().optional(),
   position: z
     .object({
-      lat: z.number(),
-      lng: z.number(),
+      lat: z.string(),
+      lng: z.string(),
     })
     .optional(),
   address: z.object({
     street: z.string(),
     number: z.number(),
     complement: z.string().optional(),
-    zipCode: z.string().regex(/\d{5}-\d{3}/),
+    zipCode: z.string(),
   }),
   createAt: z.date().nullable(),
 });
@@ -28,7 +29,7 @@ export class Institution {
   email: string;
   password: string;
   name: string;
-  description: string | undefined;
+  description: string;
   id: number | null;
   address: {
     number: number;
@@ -37,7 +38,7 @@ export class Institution {
     complement?: string | undefined;
   };
   image: string | undefined;
-  position: { lat: number; lng: number } | undefined;
+  position: { lat: string; lng: string } | undefined;
   createAt: Date | null;
 
   constructor(readonly params: InstitutionModel) {
@@ -56,5 +57,20 @@ export class Institution {
 
   private validate() {
     return institutionModel.parse(this.params);
+  }
+
+  public async setBounds(zipCode: string) {
+    const bounds = await googleMapApi.post(
+      `json?address=${zipCode}&key=${process.env.GOOGLE_GEOLOCATION_KEY}`
+    );
+
+    if (!this.position)
+      this.position = {
+        lat: String(bounds.data.results[0].geometry.location.lat),
+        lng: String(bounds.data.results[0].geometry.location.lng),
+      };
+
+    this.position.lat = String(bounds.data.results[0].geometry.location.lat);
+    this.position.lng = String(bounds.data.results[0].geometry.location.lng);
   }
 }

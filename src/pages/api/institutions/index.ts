@@ -22,21 +22,38 @@ export default async function handler(
         },
       });
 
-      return res.status(201).json({
+      res.status(201).json({
         message: "Instituição criada com sucesso",
         payload: { institutionId },
       });
-    } catch (error) {
+    } catch (error: any) {
       switch (error.name) {
         case "ZodError":
           return res.status(404).json({
             message: "Falha",
             payload: {},
-            error,
+            error: error.issues.map((data: any) => ({
+              code: data.code,
+              expected: data.expected,
+              received: data.received,
+              fieldNames: data.path,
+              message: data.message,
+            })),
+          });
+
+        case "Invalid param":
+          return res.status(404).json({
+            message: error.message,
+            payload: {},
+            error: error.message,
           });
 
         default:
-          return res.status(500);
+          return res.status(500).json({
+            message: "Opps, ocorreu um erro no servidor!",
+            payload: {},
+            error: "Opps, ocorreu um erro no servidor",
+          });
       }
     }
   }

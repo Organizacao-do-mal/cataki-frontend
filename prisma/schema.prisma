@@ -21,7 +21,7 @@ model Institution{
   complement String?
   zipCode String
   image String?
-  lat Int?
-  lng Int?
+  lat String?
+  lng String?
   createdAt DateTime @default(now())
 }
