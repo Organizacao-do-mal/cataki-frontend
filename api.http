@@ -21,3 +21,19 @@ GET http://localhost:3000/api/institutions
 ###
 
 GET http://localhost:3000/api/institutions/5
+
+###
+POST http://localhost:3000/api/collaborators
+Content-type: application/json
+
+{
+    "email": "collaborator1@gmail.com",
+    "password": "password",
+    "name": "collaborator_name",
+    "address": {
+        "street": "Praça da Sé",
+        "number": 202,
+        "zipCode": "01001-000",
+        "complement": "any_complement"
+    }
+}

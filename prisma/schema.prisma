@@ -25,3 +25,18 @@ model Institution{
   lng String?
   createdAt DateTime @default(now())
 }
+
+model Collaborator{
+  id Int @id @default(autoincrement())
+  email String
+  password String
+  name String
+  street String
+  houseNumber Int
+  complement String?
+  zipCode String
+  image String?
+  lat String?
+  lng String?
+  createdAt DateTime @default(now())
+}
