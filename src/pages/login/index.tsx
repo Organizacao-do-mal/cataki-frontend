@@ -1,12 +1,8 @@
 import { FaGoogle } from "react-icons/fa";
 import Image from "next/image";
-import { Inter } from "next/font/google";
-import Head from "next/head";
 import { GetServerSideProps } from "next";
 import { getSession, signIn } from "next-auth/react";
 import Logo from "../../../public/logo-green.svg"
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Login() {
   return (
@@ -32,7 +28,7 @@ export default function Login() {
           <div>
             <button
               onClick={() => {
-                signIn("google");
+                signIn("google",{callbackUrl: "/", redirect: true});
               }}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#6BC55C] hover:bg-[#2B761F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
@@ -58,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (session) {
     return {
       redirect: {
-        destination: "/dashboard",
+        destination: "/",
         permanent: false,
       },
     };

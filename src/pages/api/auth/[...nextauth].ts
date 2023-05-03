@@ -11,14 +11,14 @@ export default NextAuth({
   ],
   secret: process.env.SECRET,
   callbacks:{
-    async signIn({ user, account, profile, email, credentials }) {
-      console.log(user, account, profile, email, credentials);
-      return true
-    },
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   console.log(user, account, profile, email, credentials);
+    //   return true
+    // },
     async redirect({ url, baseUrl }) {
       console.log(url);
       
-      return baseUrl + '/dashboard'
+      return baseUrl + '/'
     },
   }
 })
